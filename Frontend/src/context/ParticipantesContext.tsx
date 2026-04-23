@@ -16,6 +16,8 @@ import {
   type ParticipanteCreate,
 } from "../api/participantesApi";
 
+import { participantesEjemplo } from "../data/datosEjemplo";
+
 type Action =
   | { type: "GET_PARTICIPANTES"; payload: DatosParticipante[] }
   | { type: "AGREGAR"; payload: DatosParticipante }
@@ -98,6 +100,7 @@ type ParticipantesContextType = {
   cargarEdicion: (participante: DatosParticipante) => void;
   limpiarEdicion: () => void;
   resetear: () => Promise<void>;
+  cargarDatosEjemplo: () => Promise<void>;
 };
 
 type ParticipantesProviderProps = {
@@ -140,6 +143,14 @@ export function ParticipantesProvider({ children }: ParticipantesProviderProps) 
     await cargarParticipantes();
   };
 
+  const cargarDatosEjemplo = async () => {
+    for (const participante of participantesEjemplo) {
+      const { id, ...datosParaCrear } = participante;
+      await crearParticipante(datosParaCrear);
+    }
+    await cargarParticipantes();
+  };
+
   const cargarEdicion = (participante: DatosParticipante) => {
     dispatch({ type: "CARGAR_EDICION", payload: participante });
   };
@@ -159,6 +170,7 @@ export function ParticipantesProvider({ children }: ParticipantesProviderProps) 
         cargarEdicion,
         limpiarEdicion,
         resetear,
+        cargarDatosEjemplo,
       }}
     >
       {children}

@@ -10,16 +10,25 @@ import {
 import { useParticipantes } from "./context/ParticipantesContext";
 
 function App() {
-  const { participantes, resetear } = useParticipantes();
+  const { participantes, cargarDatosEjemplo } = useParticipantes();
   const [filtros, setFiltros] = useState<FiltrosState>(filtrosIniciales);
+  const [mostrarNotificacion, setMostrarNotificacion] = useState(false);
 
   const limpiarFiltros = () => {
     setFiltros(filtrosIniciales);
   };
 
-  const resetearDatos = () => {
-    void resetear();
+  const cargarDatos = async () => {
+    await cargarDatosEjemplo();
     setFiltros(filtrosIniciales);
+    setMostrarNotificacion(true);
+    setTimeout(() => {
+      setMostrarNotificacion(false);
+      const listado = document.getElementById("lista-participantes");
+      if (listado) {
+        listado.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 2000);
   };
 
   const participantesFiltrados = useMemo(() => {
@@ -41,6 +50,12 @@ function App() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
+      {mostrarNotificacion && (
+        <div className="fixed top-4 right-4 px-4 py-3 rounded shadow-lg text-white z-50 bg-blue-500">
+          Datos de prueba cargados correctamente
+        </div>
+      )}
+
       <h1 className="text-3xl font-bold text-center">
         Registro de Participantes
       </h1>
@@ -48,10 +63,10 @@ function App() {
       <div className="flex justify-end">
         <button
           type="button"
-          onClick={resetearDatos}
+          onClick={() => void cargarDatos()}
           className="bg-amber-500 text-white px-4 py-2 rounded hover:bg-amber-600 transition"
         >
-          Resetear datos
+          Cargar datos de prueba
         </button>
       </div>
 
