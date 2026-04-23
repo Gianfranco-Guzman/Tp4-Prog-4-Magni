@@ -1,4 +1,4 @@
-﻿import type { FiltrosState } from "./filtros";
+import type { FiltrosState } from "./filtrosConfig";
 
 function Filtros({
   busqueda,

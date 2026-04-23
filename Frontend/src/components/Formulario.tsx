@@ -1,13 +1,11 @@
-﻿import { useState, type ChangeEvent, type FormEvent } from "react";
-import {
-  Participante,
-  type Modalidad,
-  type Nivel,
+import { useState, type ChangeEvent, type FormEvent } from "react";
+
+import { useParticipantes } from "../context/ParticipantesContext";
+import type {
+  Modalidad,
+  Nivel,
 } from "../models/Participante";
 
-type Props = {
-  onAgregar: (participante: Participante) => void;
-};
 
 type DatosFormulario = {
   nombre: string;
@@ -31,7 +29,8 @@ const datosIniciales: DatosFormulario = {
   aceptaTerminos: false,
 };
 
-function Formulario({ onAgregar }: Props) {
+function Formulario() {
+  const { agregar } = useParticipantes();
   const [formulario, setFormulario] = useState<DatosFormulario>(datosIniciales);
 
   const tecnologiasDisponibles = ["React", "Angular", "Vue", "Node", "Python", "Java"];
@@ -79,28 +78,16 @@ function Formulario({ onAgregar }: Props) {
     });
   };
 
-  const manejarEnvio = (evento: FormEvent<HTMLFormElement>) => {
+  const manejarEnvio = async (evento: FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
 
-    const nuevoParticipante = new Participante(
-      Date.now(),
-      formulario.nombre,
-      formulario.email,
-      formulario.edad,
-      formulario.pais,
-      formulario.modalidad,
-      formulario.tecnologias,
-      formulario.nivel,
-      formulario.aceptaTerminos,
-    );
-
-    onAgregar(nuevoParticipante);
+    await agregar(formulario);
     setFormulario(datosIniciales);
   };
 
   return (
     <form
-      onSubmit={manejarEnvio}
+      onSubmit={(evento) => void manejarEnvio(evento)}
       className="bg-white shadow rounded p-6 grid grid-cols-1 md:grid-cols-2 gap-4"
     >
       <div>

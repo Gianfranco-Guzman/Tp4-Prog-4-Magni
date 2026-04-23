@@ -1,4 +1,5 @@
-﻿import type { Participante } from "../models/Participante";
+import { useParticipantes } from "../context/ParticipantesContext";
+import type { DatosParticipante } from "../models/Participante";
 
 const coloresPorNivel = {
   Principiante: "bg-green-100",
@@ -8,11 +9,11 @@ const coloresPorNivel = {
 
 function ParticipanteCard({
   participante,
-  onEliminar,
 }: {
-  participante: Participante;
-  onEliminar: (id: number) => void;
+  participante: DatosParticipante;
 }) {
+  const { eliminar } = useParticipantes();
+
   return (
     <article
       className={`shadow rounded p-4 hover:shadow-lg transition ${
@@ -47,7 +48,7 @@ function ParticipanteCard({
       </p>
 
       <button
-        onClick={() => onEliminar(participante.id)}
+        onClick={() => void eliminar(participante.id)}
         className="mt-3 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
       >
         Eliminar

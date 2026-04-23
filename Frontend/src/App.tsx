@@ -1,102 +1,24 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+
 import Formulario from "./components/Formulario";
 import Filtros from "./components/Filtros";
 import ParticipanteCard from "./components/ParticipanteCard";
 import {
   filtrosIniciales,
   type FiltrosState,
-} from "./components/filtros";
-import { Participante, type DatosParticipante } from "./models/Participante";
-
-const STORAGE_KEY = "participantes";
-
-const participantesIniciales: Participante[] = [
-  new Participante(
-    1,
-    "Juan Perez",
-    "juan@mail.com",
-    25,
-    "Argentina",
-    "Presencial",
-    ["React", "Node"],
-    "Intermedio",
-    true,
-  ),
-  new Participante(
-    2,
-    "Ana Gomez",
-    "ana@mail.com",
-    30,
-    "Chile",
-    "Virtual",
-    ["Angular", "Java"],
-    "Avanzado",
-    true,
-  ),
-  new Participante(
-    3,
-    "Luis Martinez",
-    "luis@mail.com",
-    22,
-    "Mexico",
-    "Hibrido",
-    ["Vue", "Python"],
-    "Principiante",
-    true,
-  ),
-];
+} from "./components/filtrosConfig";
+import { useParticipantes } from "./context/ParticipantesContext";
 
 function App() {
-  const [participantes, setParticipantes] = useState<Participante[]>([]);
+  const { participantes, resetear } = useParticipantes();
   const [filtros, setFiltros] = useState<FiltrosState>(filtrosIniciales);
-  const [estaInicializado, setEstaInicializado] = useState(false);
-
-  useEffect(() => {
-    const participantesGuardados = localStorage.getItem(STORAGE_KEY);
-
-    if (!participantesGuardados) {
-      setParticipantes(participantesIniciales);
-      setEstaInicializado(true);
-      return;
-    }
-
-    try {
-      const participantesParseados: DatosParticipante[] = JSON.parse(participantesGuardados);
-      setParticipantes(
-        participantesParseados.map((participante) =>
-          Participante.desdeObjeto(participante),
-        ),
-      );
-    } catch {
-      setParticipantes(participantesIniciales);
-    } finally {
-      setEstaInicializado(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!estaInicializado) {
-      return;
-    }
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(participantes));
-  }, [participantes, estaInicializado]);
-
-  const agregarParticipante = (nuevo: Participante) => {
-    setParticipantes((prev) => [...prev, nuevo]);
-  };
-
-  const eliminarParticipante = (id: number) => {
-    setParticipantes((prev) => prev.filter((participante) => participante.id !== id));
-  };
 
   const limpiarFiltros = () => {
     setFiltros(filtrosIniciales);
   };
 
   const resetearDatos = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    setParticipantes(participantesIniciales);
+    void resetear();
     setFiltros(filtrosIniciales);
   };
 
@@ -137,7 +59,7 @@ function App() {
         </button>
       </div>
 
-      <Formulario onAgregar={agregarParticipante} />
+      <Formulario />
 
       <Filtros
         busqueda={filtros.busqueda}
@@ -160,7 +82,6 @@ function App() {
               <ParticipanteCard
                 key={participante.id}
                 participante={participante}
-                onEliminar={eliminarParticipante}
               />
             ))}
           </div>

@@ -5,9 +5,11 @@ class ParticipanteCreate(SQLModel):
     nombre: str
     email: str
     edad: int
-    telefono: str
+    pais: str
     modalidad: str
+    tecnologias: list[str]
     nivel: str
+    aceptaTerminos: bool
 
 
 class ParticipanteRead(SQLModel):
@@ -15,6 +17,8 @@ class ParticipanteRead(SQLModel):
     nombre: str
     email: str
     edad: int
-    telefono: str
+    pais: str
     modalidad: str
+    tecnologias: list[str]
     nivel: str
+    aceptaTerminos: bool

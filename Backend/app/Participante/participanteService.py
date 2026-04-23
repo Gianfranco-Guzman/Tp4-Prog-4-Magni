@@ -19,9 +19,11 @@ class ParticipanteService:
                 nombre=datos_participante.nombre,
                 email=datos_participante.email,
                 edad=datos_participante.edad,
-                telefono=datos_participante.telefono,
+                pais=datos_participante.pais,
                 modalidad=datos_participante.modalidad,
-                nivel=datos_participante.nivel
+                tecnologias=datos_participante.tecnologias,
+                nivel=datos_participante.nivel,
+                aceptaTerminos=datos_participante.aceptaTerminos,
             )
 
             return repositorio.crear(nuevo_participante)
@@ -35,7 +37,7 @@ class ParticipanteService:
             if not participante:
                 raise HTTPException(
                     status_code=404,
-                    detail="Participante no encontrado"
+                    detail="Participante no encontrado",
                 )
 
             repositorio.eliminar(participante)
