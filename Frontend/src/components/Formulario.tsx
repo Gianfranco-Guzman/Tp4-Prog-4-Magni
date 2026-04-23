@@ -121,6 +121,7 @@ function Formulario() {
 
   return (
     <form
+      id="formulario-participante"
       onSubmit={(evento) => void manejarEnvio(evento)}
       className="bg-white shadow rounded p-6 grid grid-cols-1 md:grid-cols-2 gap-4"
     >

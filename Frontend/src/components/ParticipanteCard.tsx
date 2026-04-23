@@ -14,6 +14,14 @@ function ParticipanteCard({
 }) {
   const { eliminar, cargarEdicion } = useParticipantes();
 
+  const manejarEditar = (participante: DatosParticipante) => {
+    cargarEdicion(participante);
+    const formulario = document.getElementById("formulario-participante");
+    if (formulario) {
+      formulario.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <article
       className={`shadow rounded p-4 hover:shadow-lg transition ${
@@ -49,7 +57,7 @@ function ParticipanteCard({
 
       <div className="flex gap-2 mt-3">
         <button
-          onClick={() => cargarEdicion(participante)}
+          onClick={() => manejarEditar(participante)}
           className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
         >
           Editar
