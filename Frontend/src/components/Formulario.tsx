@@ -33,6 +33,9 @@ function Formulario() {
   const { agregar, editar, participanteEnEdicion, limpiarEdicion } = useParticipantes();
   const [formulario, setFormulario] = useState<DatosFormulario>(datosIniciales);
   const [estoyEditando, setEstoyEditando] = useState(false);
+  const [estoyGuardando, setEstoyGuardando] = useState(false);
+  const [mostrarNotificacion, setMostrarNotificacion] = useState(false);
+  const [tipoNotificacion, setTipoNotificacion] = useState<"exito" | "error">("exito");
 
   const tecnologiasDisponibles = ["React", "Angular", "Vue", "Node", "Python", "Java"];
   const paisesDisponibles = ["Argentina", "Chile", "Uruguay", "Mexico", "Espana"];
@@ -97,20 +100,41 @@ function Formulario() {
 
   const manejarEnvio = async (evento: FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
+    setEstoyGuardando(true);
 
-    if (estoyEditando && participanteEnEdicion) {
-      const participanteActualizado: DatosParticipante = {
-        ...formulario,
-        id: participanteEnEdicion.id,
-      };
-      await editar(participanteActualizado);
-      limpiarEdicion();
-    } else {
-      await agregar(formulario);
+    try {
+      if (estoyEditando && participanteEnEdicion) {
+        const participanteActualizado: DatosParticipante = {
+          ...formulario,
+          id: participanteEnEdicion.id,
+        };
+        await editar(participanteActualizado);
+        limpiarEdicion();
+      } else {
+        await agregar(formulario);
+      }
+
+      setFormulario(datosIniciales);
+      setEstoyEditando(false);
+      setTipoNotificacion("exito");
+      setMostrarNotificacion(true);
+
+      setTimeout(() => {
+        setMostrarNotificacion(false);
+        const listado = document.getElementById("lista-participantes");
+        if (listado) {
+          listado.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 2000);
+    } catch (error) {
+      setTipoNotificacion("error");
+      setMostrarNotificacion(true);
+      setTimeout(() => {
+        setMostrarNotificacion(false);
+      }, 3000);
+    } finally {
+      setEstoyGuardando(false);
     }
-
-    setFormulario(datosIniciales);
-    setEstoyEditando(false);
   };
 
   const cancelarEdicion = () => {
@@ -120,11 +144,24 @@ function Formulario() {
   };
 
   return (
-    <form
-      id="formulario-participante"
-      onSubmit={(evento) => void manejarEnvio(evento)}
-      className="bg-white shadow rounded p-6 grid grid-cols-1 md:grid-cols-2 gap-4"
-    >
+    <>
+      {mostrarNotificacion && (
+        <div
+          className={`fixed top-4 right-4 px-4 py-3 rounded shadow-lg text-white z-50 ${
+            tipoNotificacion === "exito" ? "bg-green-500" : "bg-red-500"
+          }`}
+        >
+          {tipoNotificacion === "exito"
+            ? "Participante guardado correctamente"
+            : "Error al guardar el participante"}
+        </div>
+      )}
+
+      <form
+        id="formulario-participante"
+        onSubmit={(evento) => void manejarEnvio(evento)}
+        className="bg-white shadow rounded p-6 grid grid-cols-1 md:grid-cols-2 gap-4"
+      >
       <div>
         <label className="block mb-1 font-medium">Nombre</label>
         <input
@@ -244,22 +281,29 @@ function Formulario() {
       <div className="md:col-span-2 flex gap-2">
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          disabled={estoyGuardando}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {estoyEditando ? "Guardar cambios" : "Registrar participante"}
+          {estoyGuardando
+            ? "Guardando..."
+            : estoyEditando
+              ? "Guardar cambios"
+              : "Registrar participante"}
         </button>
 
         {estoyEditando && (
           <button
             type="button"
             onClick={cancelarEdicion}
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+            disabled={estoyGuardando}
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancelar
           </button>
         )}
       </div>
     </form>
+    </>
   );
 }
 

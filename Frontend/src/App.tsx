@@ -69,7 +69,7 @@ function App() {
         onLimpiar={limpiarFiltros}
       />
 
-      <section>
+      <section id="lista-participantes">
         <h2 className="text-xl font-semibold mb-4">Lista de participantes</h2>
 
         {participantesFiltrados.length === 0 ? (
