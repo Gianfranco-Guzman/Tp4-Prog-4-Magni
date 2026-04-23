@@ -12,7 +12,7 @@ function ParticipanteCard({
 }: {
   participante: DatosParticipante;
 }) {
-  const { eliminar } = useParticipantes();
+  const { eliminar, cargarEdicion } = useParticipantes();
 
   return (
     <article
@@ -47,12 +47,21 @@ function ParticipanteCard({
         {participante.tecnologias.join(" - ") || "Sin tecnologias"}
       </p>
 
-      <button
-        onClick={() => void eliminar(participante.id)}
-        className="mt-3 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-      >
-        Eliminar
-      </button>
+      <div className="flex gap-2 mt-3">
+        <button
+          onClick={() => cargarEdicion(participante)}
+          className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+        >
+          Editar
+        </button>
+
+        <button
+          onClick={() => void eliminar(participante.id)}
+          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+        >
+          Eliminar
+        </button>
+      </div>
     </article>
   );
 }

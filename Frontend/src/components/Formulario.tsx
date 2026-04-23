@@ -1,9 +1,10 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, useEffect, type ChangeEvent, type FormEvent } from "react";
 
 import { useParticipantes } from "../context/ParticipantesContext";
 import type {
   Modalidad,
   Nivel,
+  DatosParticipante,
 } from "../models/Participante";
 
 
@@ -30,13 +31,31 @@ const datosIniciales: DatosFormulario = {
 };
 
 function Formulario() {
-  const { agregar } = useParticipantes();
+  const { agregar, editar, participanteEnEdicion, limpiarEdicion } = useParticipantes();
   const [formulario, setFormulario] = useState<DatosFormulario>(datosIniciales);
+  const [estoyEditando, setEstoyEditando] = useState(false);
 
   const tecnologiasDisponibles = ["React", "Angular", "Vue", "Node", "Python", "Java"];
   const paisesDisponibles = ["Argentina", "Chile", "Uruguay", "Mexico", "Espana"];
   const modalidadesDisponibles: Modalidad[] = ["Presencial", "Virtual", "Hibrido"];
   const nivelesDisponibles: Nivel[] = ["Principiante", "Intermedio", "Avanzado"];
+
+  // Cuando se carga un participante para editar, rellenar el formulario con sus datos
+  useEffect(() => {
+    if (participanteEnEdicion) {
+      setFormulario({
+        nombre: participanteEnEdicion.nombre,
+        email: participanteEnEdicion.email,
+        edad: participanteEnEdicion.edad,
+        pais: participanteEnEdicion.pais,
+        modalidad: participanteEnEdicion.modalidad,
+        tecnologias: participanteEnEdicion.tecnologias,
+        nivel: participanteEnEdicion.nivel,
+        aceptaTerminos: participanteEnEdicion.aceptaTerminos,
+      });
+      setEstoyEditando(true);
+    }
+  }, [participanteEnEdicion]);
 
   const manejarCambioInput = (
     evento: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -81,8 +100,28 @@ function Formulario() {
   const manejarEnvio = async (evento: FormEvent<HTMLFormElement>) => {
     evento.preventDefault();
 
-    await agregar(formulario);
+    if (estoyEditando && participanteEnEdicion) {
+      // Si estoy editando, actualizar el participante
+      const participanteActualizado: DatosParticipante = {
+        ...formulario,
+        id: participanteEnEdicion.id,
+      };
+      await editar(participanteActualizado);
+      limpiarEdicion();
+    } else {
+      // Si no, agregar un nuevo participante
+      await agregar(formulario);
+    }
+
+    // Limpiar formulario después de enviar
     setFormulario(datosIniciales);
+    setEstoyEditando(false);
+  };
+
+  const cancelarEdicion = () => {
+    limpiarEdicion();
+    setFormulario(datosIniciales);
+    setEstoyEditando(false);
   };
 
   return (
@@ -206,13 +245,23 @@ function Formulario() {
         </label>
       </div>
 
-      <div className="md:col-span-2">
+      <div className="md:col-span-2 flex gap-2">
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
         >
-          Registrar participante
+          {estoyEditando ? "Guardar cambios" : "Registrar participante"}
         </button>
+
+        {estoyEditando && (
+          <button
+            type="button"
+            onClick={cancelarEdicion}
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+          >
+            Cancelar
+          </button>
+        )}
       </div>
     </form>
   );

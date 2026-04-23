@@ -22,6 +22,11 @@ def crear_participante(participante: ParticipanteCreate):
     return service.crear_participante(participante)
 
 
+@router.put("/participantes/{participante_id}", response_model=ParticipanteRead)
+def actualizar_participante(participante_id: int, participante: ParticipanteCreate):
+    return service.actualizar_participante(participante_id, participante)
+
+
 @router.delete("/participantes/{participante_id}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar_participante(participante_id: int):
     service.eliminar_participante(participante_id)

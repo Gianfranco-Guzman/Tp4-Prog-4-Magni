@@ -32,6 +32,26 @@ export async function crearParticipante(
   return respuesta.json();
 }
 
+// Función nueva para actualizar un participante (TP5)
+export async function actualizarParticipante(
+  id: number,
+  participante: ParticipanteCreate,
+): Promise<DatosParticipante> {
+  const respuesta = await fetch(`${API_URL}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(participante),
+  });
+
+  if (!respuesta.ok) {
+    throw new Error("Error al actualizar participante");
+  }
+
+  return respuesta.json();
+}
+
 export async function eliminarParticipante(id: number): Promise<void> {
   const respuesta = await fetch(`${API_URL}/${id}`, {
     method: "DELETE",

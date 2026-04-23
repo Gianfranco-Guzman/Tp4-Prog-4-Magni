@@ -20,5 +20,11 @@ class ParticipanteRepository:
         self.session.refresh(participante)
         return participante
 
+    def actualizar(self, participante: Participante):
+        self.session.add(participante)
+        self.session.flush()
+        self.session.refresh(participante)
+        return participante
+
     def eliminar(self, participante: Participante):
         self.session.delete(participante)
