@@ -45,10 +45,6 @@ function App() {
         Registro de Participantes
       </h1>
 
-      <div className="bg-blue-50 border border-blue-200 rounded p-4 text-lg font-medium">
-        Mostrando {participantesFiltrados.length} de {participantes.length} participantes
-      </div>
-
       <div className="flex justify-end">
         <button
           type="button"
@@ -67,6 +63,8 @@ function App() {
         nivel={filtros.nivel}
         onCambiarFiltros={setFiltros}
         onLimpiar={limpiarFiltros}
+        totalParticipantes={participantes.length}
+        participantesFiltrados={participantesFiltrados.length}
       />
 
       <section id="lista-participantes">

@@ -6,12 +6,16 @@ function Filtros({
   nivel,
   onCambiarFiltros,
   onLimpiar,
+  totalParticipantes,
+  participantesFiltrados,
 }: {
   busqueda: string;
   modalidad: string;
   nivel: string;
   onCambiarFiltros: (filtros: FiltrosState) => void;
   onLimpiar: () => void;
+  totalParticipantes: number;
+  participantesFiltrados: number;
 }) {
   const manejarCambio = (
     evento: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -72,7 +76,10 @@ function Filtros({
         </div>
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex justify-between items-center">
+        <div className="text-sm font-medium text-slate-600">
+          Mostrando {participantesFiltrados} de {totalParticipantes} participantes
+        </div>
         <button
           type="button"
           onClick={onLimpiar}
