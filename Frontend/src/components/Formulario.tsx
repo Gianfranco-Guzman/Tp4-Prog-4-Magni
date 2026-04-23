@@ -7,7 +7,6 @@ import type {
   DatosParticipante,
 } from "../models/Participante";
 
-
 type DatosFormulario = {
   nombre: string;
   email: string;
@@ -40,7 +39,6 @@ function Formulario() {
   const modalidadesDisponibles: Modalidad[] = ["Presencial", "Virtual", "Hibrido"];
   const nivelesDisponibles: Nivel[] = ["Principiante", "Intermedio", "Avanzado"];
 
-  // Cuando se carga un participante para editar, rellenar el formulario con sus datos
   useEffect(() => {
     if (participanteEnEdicion) {
       setFormulario({
@@ -101,7 +99,6 @@ function Formulario() {
     evento.preventDefault();
 
     if (estoyEditando && participanteEnEdicion) {
-      // Si estoy editando, actualizar el participante
       const participanteActualizado: DatosParticipante = {
         ...formulario,
         id: participanteEnEdicion.id,
@@ -109,11 +106,9 @@ function Formulario() {
       await editar(participanteActualizado);
       limpiarEdicion();
     } else {
-      // Si no, agregar un nuevo participante
       await agregar(formulario);
     }
 
-    // Limpiar formulario después de enviar
     setFormulario(datosIniciales);
     setEstoyEditando(false);
   };

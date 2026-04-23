@@ -32,7 +32,6 @@ class ParticipanteService:
         with UnitOfWork() as uow:
             repositorio = ParticipanteRepository(uow.session)
 
-            # Obtener el participante que queremos actualizar
             participante = repositorio.obtener_por_id(participante_id)
 
             if not participante:
@@ -41,7 +40,6 @@ class ParticipanteService:
                     detail="Participante no encontrado",
                 )
 
-            # Actualizar los campos del participante
             participante.nombre = datos_participante.nombre
             participante.email = datos_participante.email
             participante.edad = datos_participante.edad
@@ -51,7 +49,6 @@ class ParticipanteService:
             participante.nivel = datos_participante.nivel
             participante.aceptaTerminos = datos_participante.aceptaTerminos
 
-            # Guardar los cambios
             return repositorio.actualizar(participante)
 
     def eliminar_participante(self, participante_id: int):

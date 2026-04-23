@@ -32,7 +32,6 @@ export async function crearParticipante(
   return respuesta.json();
 }
 
-// Función nueva para actualizar un participante (TP5)
 export async function actualizarParticipante(
   id: number,
   participante: ParticipanteCreate,
