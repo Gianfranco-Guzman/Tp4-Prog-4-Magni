@@ -23,7 +23,6 @@ type Action =
   | { type: "AGREGAR"; payload: DatosParticipante }
   | { type: "ELIMINAR"; payload: number }
   | { type: "EDITAR"; payload: DatosParticipante }
-  | { type: "RESET"; payload: DatosParticipante[] }
   | { type: "CARGAR_EDICION"; payload: DatosParticipante }
   | { type: "LIMPIAR_EDICION" };
 
@@ -61,12 +60,6 @@ function participantesReducer(state: ParticipantesState, action: Action): Partic
           participante.id === action.payload.id ? action.payload : participante
         ),
         participanteEnEdicion: null,
-      };
-
-    case "RESET":
-      return {
-        ...state,
-        participantes: action.payload,
       };
 
     case "CARGAR_EDICION":
